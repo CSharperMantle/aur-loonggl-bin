@@ -1,0 +1,24 @@
+pkgbase = loonggl
+	pkgdesc = OpenGL runtime components for LoongGPU
+	pkgver = 1.0.2_lnd25.1.rc1.7
+	pkgrel = 2
+	url = https://pkg.loongnix.cn/
+	install = loonggl.install
+	arch = loong64
+	license = custom
+	depends = elfutils
+	depends = expat
+	depends = gcc-libs
+	depends = glibc
+	depends = libdrm
+	depends = ldrm
+	depends = loong-gpucomp
+	depends = lm_sensors
+	depends = libx11
+	depends = zlib
+	depends = libglvnd
+	options = !strip
+	source = loonggl_1.0.2-lnd25.1~rc1.7_loong64.deb::https://pkg.loongnix.cn/loongnix/25/pool/non-free/l/loonggpu-graphics-drivers/loonggl_1.0.2_lnd25.1.rc1.7_loong64.deb
+	sha256sums = 7ad0eba229921643d11dcf58f43ce3ff164f032aa2ba7d61dcf642c9cdc1d221
+
+pkgname = loonggl
