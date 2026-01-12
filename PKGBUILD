@@ -11,7 +11,7 @@ pkgrel=2
 pkgdesc='OpenGL runtime components for LoongGPU'
 arch=('loong64')
 url='https://pkg.loongnix.cn/'
-license=('custom')
+license=('LicenseRef-Proprietary')
 depends=(
   'elfutils'
   'expat'
@@ -26,6 +26,8 @@ depends=(
   'libglvnd'
 )
 options=('!strip')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
 install="${_pkgname}.install"
 
 _debname="${_pkgname}_${_origver}_loong64.deb"
@@ -47,15 +49,15 @@ package() {
 
   echo 'Moving libraries to the correct location ...'
   mv -v "$pkgdir"/usr/lib/loongarch64-linux-gnu/* "$pkgdir"/usr/lib/
-  rmdir "$pkgdir"/usr/lib/loongarch64-linux-gnu
+  rmdir -v "$pkgdir"/usr/lib/loongarch64-linux-gnu
 
   echo 'Setting executable bits for shared objects ...'
   chmod -v +x "$pkgdir"/usr/lib/{,dri/,loonggpu/,gsgpu/}*.so*
 
-  # FIXME: X.Org Server does not earch for DRI in /usr/lib/dri.
+  # FIXME: X.Org Server does not search for DRI in /usr/lib/dri.
   # Whereas LoongGPU expects DRI modules to be stored in this path.
-  echo 'Moving X11 DRI module to the correct location ...'
-  install -d "$pkgdir"/usr/lib/xorg/modules/dri
+  echo 'Linking X11 DRI module to the correct location ...'
+  mkdir -p "$pkgdir"/usr/lib/xorg/modules/dri
   ln -svf ../../../gsgpu/dri/gsgpu_dri.so "$pkgdir"/usr/lib/xorg/modules/dri/gsgpu_dri.so
   ln -svf ../../../loonggpu/dri/loonggpu_dri.so "$pkgdir"/usr/lib/xorg/modules/dri/loonggpu_dri.so
 
@@ -68,11 +70,7 @@ package() {
 
   # FIXME: See the loonggl-hack script for this stupidity.
   echo 'Renaming JSON files for loonggl-hack ...'
-  for json in "$pkgdir"/usr/share/glvnd/egl_vendor.d/40*.json; do
-    [ -e "$json" ] || continue
-    base="$(basename -- "$json")"
-    mv -v "$json" "$pkgdir"/usr/share/glvnd/egl_vendor.d/"${base/40/60}"
-  done
+  rename -v 40 60 "$pkgdir"/usr/share/glvnd/egl_vendor.d/*.json
 
   install -Dvm644 -t "$pkgdir"/usr/lib/systemd/system/ "$srcdir"/loonggl-hack.service
   install -Dvm644 -t "$pkgdir"/usr/lib/systemd/system-preset/ "$srcdir"/40-loonggl-hack.preset

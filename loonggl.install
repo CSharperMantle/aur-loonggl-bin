@@ -1,11 +1,11 @@
 post_install() {
   rm -f /etc/init.d/vga_check.sh
 
-  systemctl preset loonggl-hack.service >/dev/null 2>&1 || true
+  systemctl preset loonggl-hack.service
 
-  if ! systemd-detect-virt -q 2>/dev/null; then
-    systemctl daemon-reload >/dev/null 2>&1 || true
-    systemctl restart loonggl-hack.service >/dev/null 2>&1 || true
+  if ! systemd-detect-virt -q ; then
+    systemctl daemon-reload
+    systemctl restart loonggl-hack.service
   fi
 }
 
@@ -14,6 +14,6 @@ post_upgrade() {
 }
 
 pre_remove() {
-  rm -f /usr/share/glvnd/egl_vendor.d/40_{gs,loong}gpu.json
-  rm -f /etc/init.d/vga_check.sh
+  rm -vf /usr/share/glvnd/egl_vendor.d/40_{gs,loong}gpu.json
+  rm -vf /etc/init.d/vga_check.sh
 }
